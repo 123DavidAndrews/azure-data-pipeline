@@ -1,0 +1,9 @@
+{
+	"name": "adf-cloudskills-dev",
+	"location": "australiaeast",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ca8b4e75-abbb-46a6-b207-3446afb38d1f",
+		"tenantId": "4a17663f-34c1-42c8-90e5-b9257924021e"
+	}
+}

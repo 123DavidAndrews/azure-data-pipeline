@@ -1,0 +1,32 @@
+{
+	"name": "ds_copied_output",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_cloudskills_storage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"OutputDirectory": {
+				"type": "string",
+				"defaultValue": "@dataset().OutputDirectory"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": {
+					"value": "@dataset().OutputDirectory",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

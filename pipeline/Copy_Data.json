@@ -1,0 +1,135 @@
+{
+	"name": "Copy_Data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_raw_input",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_copied_output",
+						"type": "DatasetReference",
+						"parameters": {
+							"OutputDirectory": {
+								"value": "@pipeline().parameters.OutputDirectory",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/123davidandrews@gmail.com/BlobToBlobPipeline"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_cloudskills_databricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Notebook2",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Notebook1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/123davidandrews@gmail.com/Create Table+View"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_cloudskills_databricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"OutputDirectory": {
+				"type": "string",
+				"defaultValue": "copied"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-12-07T11:48:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
